@@ -29,10 +29,12 @@ jobs:
         continue-on-error: true
         run: |
           echo "Running Test Gate..."
-          if pytest; then
+          if pytest > test_output.txt 2>&1; then
             echo "TEST_RESULT=PASS" >> $GITHUB_ENV
+            echo "TEST_REASON=None" >> $GITHUB_ENV
           else
             echo "TEST_RESULT=FAIL" >> $GITHUB_ENV
+            echo "TEST_REASON=$(tail -n 5 test_output.txt | tr '\n' ' ')" >> $GITHUB_ENV
           fi
 
       - name: Run AI Gate
@@ -42,27 +44,41 @@ jobs:
           echo "Running AI Gate..."
           if python ai_quality_gate.py; then
             echo "AI_RESULT=APPROVE" >> $GITHUB_ENV
+            echo "AI_REASON=None" >> $GITHUB_ENV
           else
             echo "AI_RESULT=REJECT" >> $GITHUB_ENV
+            echo "AI_REASON=$(cat ai_output.txt | tr '\n' ' ')" >> $GITHUB_ENV
           fi
 
       - name: Print Quality Gate Summary
         run: |
           {
-            echo "## QUALITY GATE SUMMARY"
-            echo "TestGate = $TEST_RESULT"
-            echo "AI = $AI_RESULT"
+            echo "## Quality Gate Summary"
+            echo "- TestGate = $TEST_RESULT"
+            echo "- AI = $AI_RESULT"
 
             if [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "APPROVE" ]; then
-              echo "Evidence = Pytest passed and AI gate approved the change."
+              echo "Evidence: Pytest passed and AI gate approved the change."
             elif [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "REJECT" ]; then
-              echo "Evidence = Pytest passed, but AI gate rejected the change."
+              echo "Evidence: Pytest passed, but AI gate rejected the change."
             elif [ "$TEST_RESULT" = "FAIL" ] && [ "$AI_RESULT" = "APPROVE" ]; then
-              echo "Evidence = Pytest failed, but AI gate approved the change."
+              echo "Evidence: Pytest failed, but AI gate approved the change."
             else
-              echo "Evidence = Pytest failed and AI gate rejected the change."
+              echo "Evidence: Pytest failed and AI gate rejected the change."
             fi
-          }
+
+            if [ "$TEST_RESULT" = "FAIL" ] && [ "$AI_RESULT" = "REJECT" ]; then
+              echo "Reason (TestGate): $TEST_REASON"
+              echo "Reason (AI Gate): $AI_REASON"
+            elif [ "$TEST_RESULT" = "FAIL" ]; then
+              echo "Reason: $TEST_REASON"
+            elif [ "$AI_RESULT" = "REJECT" ]; then
+              echo "Reason: $AI_REASON"
+            else
+              echo "Reason: None"
+            fi
+
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: Final Pipeline Decision
         run: |
