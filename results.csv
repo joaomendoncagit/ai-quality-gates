@@ -1,11 +1,4 @@
-Case,Human,AI,Final,Override,Actual
-1,APPROVE,APPROVE,APPROVE,No,No defect
-2,REJECT,REJECT,REJECT,No,Defect
-3,REJECT,APPROVE,REJECT,Yes,Defect
-4,REJECT,APPROVE,REJECT,Yes,Potential defect
-5,APPROVE,REJECT,APPROVE,Yes,No defect
-6,APPROVE,APPROVE,APPROVE,No,No defect
-7,REJECT,REJECT,REJECT,No,Defect
-8,APPROVE,APPROVE,APPROVE,No,No defect
-9,APPROVE,REJECT,APPROVE,Yes,No defect
-10,REJECT,APPROVE,REJECT,Yes,Defect
+Case,Change,TestGate,AI,Human,Final,Override,Actual,Evidence
+1,Baseline correct implementation,PASS,APPROVE,APPROVE,APPROVE,No,No defect,Pipeline passed with correct add() and divide()
+2,Add divide without zero check,PASS,REJECT,REJECT,REJECT,No,Defect,GitHub Actions failed because simulated AI gate detected division without zero-division check
+3,Changed add() to return a - b,FAIL,Not evaluated,REJECT,REJECT,No,Defect,Pytest failed because add(2,3) returned -1 instead of 5
