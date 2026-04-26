@@ -48,21 +48,21 @@ jobs:
 
       - name: Print Quality Gate Summary
         run: |
-          echo "=============================="
-          echo "QUALITY GATE SUMMARY"
-          echo "=============================="
-          echo "TestGate = $TEST_RESULT"
-          echo "AI = $AI_RESULT"
+          {
+            echo "## QUALITY GATE SUMMARY"
+            echo "TestGate = $TEST_RESULT"
+            echo "AI = $AI_RESULT"
 
-          if [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "APPROVE" ]; then
-            echo "Evidence = Pytest passed and AI gate approved the change."
-          elif [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "REJECT" ]; then
-            echo "Evidence = Pytest passed, but AI gate rejected the change."
-          elif [ "$TEST_RESULT" = "FAIL" ] && [ "$AI_RESULT" = "APPROVE" ]; then
-            echo "Evidence = Pytest failed, but AI gate approved the change."
-          else
-            echo "Evidence = Pytest failed and AI gate rejected the change."
-          fi
+            if [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "APPROVE" ]; then
+              echo "Evidence = Pytest passed and AI gate approved the change."
+            elif [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "REJECT" ]; then
+              echo "Evidence = Pytest passed, but AI gate rejected the change."
+            elif [ "$TEST_RESULT" = "FAIL" ] && [ "$AI_RESULT" = "APPROVE" ]; then
+              echo "Evidence = Pytest failed, but AI gate approved the change."
+            else
+              echo "Evidence = Pytest failed and AI gate rejected the change."
+            fi
+          }
 
       - name: Final Pipeline Decision
         run: |
