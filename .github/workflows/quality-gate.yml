@@ -24,8 +24,51 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest
+      - name: Run Test Gate
+        id: test_gate
+        continue-on-error: true
+        run: |
+          echo "Running Test Gate..."
+          if pytest; then
+            echo "TEST_RESULT=PASS" >> $GITHUB_ENV
+          else
+            echo "TEST_RESULT=FAIL" >> $GITHUB_ENV
+          fi
 
-      - name: Run simulated AI quality gate
-        run: python ai_quality_gate.py
+      - name: Run AI Gate
+        id: ai_gate
+        continue-on-error: true
+        run: |
+          echo "Running AI Gate..."
+          if python ai_quality_gate.py; then
+            echo "AI_RESULT=APPROVE" >> $GITHUB_ENV
+          else
+            echo "AI_RESULT=REJECT" >> $GITHUB_ENV
+          fi
+
+      - name: Print Quality Gate Summary
+        run: |
+          echo "=============================="
+          echo "QUALITY GATE SUMMARY"
+          echo "=============================="
+          echo "TestGate = $TEST_RESULT"
+          echo "AI = $AI_RESULT"
+
+          if [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "APPROVE" ]; then
+            echo "Evidence = Pytest passed and AI gate approved the change."
+          elif [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "REJECT" ]; then
+            echo "Evidence = Pytest passed, but AI gate rejected the change."
+          elif [ "$TEST_RESULT" = "FAIL" ] && [ "$AI_RESULT" = "APPROVE" ]; then
+            echo "Evidence = Pytest failed, but AI gate approved the change."
+          else
+            echo "Evidence = Pytest failed and AI gate rejected the change."
+          fi
+
+      - name: Final Pipeline Decision
+        run: |
+          if [ "$TEST_RESULT" = "FAIL" ] || [ "$AI_RESULT" = "REJECT" ]; then
+            echo "Final pipeline result: FAIL"
+            exit 1
+          else
+            echo "Final pipeline result: PASS"
+          fi
