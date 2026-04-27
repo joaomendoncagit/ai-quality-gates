@@ -34,7 +34,7 @@ jobs:
             echo "TEST_REASON=None" >> $GITHUB_ENV
           else
             echo "TEST_RESULT=FAIL" >> $GITHUB_ENV
-            echo "TEST_REASON=$(grep -i "AssertionError" test_output.txt | head -n 1 | tr '\n' ' ')" >> $GITHUB_ENV
+            echo "TEST_REASON=$(tail -n 5 test_output.txt | tr '\n' ' ')" >> $GITHUB_ENV
           fi
 
       - name: Run AI Gate
