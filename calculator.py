@@ -1,5 +1,7 @@
 def add(a, b):
-    return a - b  # wrong logic
+    return a + b
 
 def divide(a, b):
-    return a / b  # still no zero check
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
