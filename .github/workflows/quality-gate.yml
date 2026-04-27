@@ -42,7 +42,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "Running AI Gate..."
-          if python ai_quality_gate.py; then
+          if python ai_quality_gate.py > ai_output.txt 2>&1; then
             echo "AI_RESULT=APPROVE" >> $GITHUB_ENV
             echo "AI_REASON=None" >> $GITHUB_ENV
           else
@@ -58,24 +58,24 @@ jobs:
             echo "- AI = $AI_RESULT"
 
             if [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "APPROVE" ]; then
-              echo "Evidence: Pytest passed and AI gate approved the change."
+              echo "- Evidence: Pytest passed and AI gate approved the change."
             elif [ "$TEST_RESULT" = "PASS" ] && [ "$AI_RESULT" = "REJECT" ]; then
-              echo "Evidence: Pytest passed, but AI gate rejected the change."
+              echo "- Evidence: Pytest passed, but AI gate rejected the change."
             elif [ "$TEST_RESULT" = "FAIL" ] && [ "$AI_RESULT" = "APPROVE" ]; then
-              echo "Evidence: Pytest failed, but AI gate approved the change."
+              echo "- Evidence: Pytest failed, but AI gate approved the change."
             else
-              echo "Evidence: Pytest failed and AI gate rejected the change."
+              echo "- Evidence: Pytest failed and AI gate rejected the change."
             fi
 
             if [ "$TEST_RESULT" = "FAIL" ] && [ "$AI_RESULT" = "REJECT" ]; then
-              echo "Reason (TestGate): $TEST_REASON"
-              echo "Reason (AI Gate): $AI_REASON"
+              echo "- Reason (TestGate): $TEST_REASON"
+              echo "- Reason (AI Gate): $AI_REASON"
             elif [ "$TEST_RESULT" = "FAIL" ]; then
-              echo "Reason: $TEST_REASON"
+              echo "- Reason: $TEST_REASON"
             elif [ "$AI_RESULT" = "REJECT" ]; then
-              echo "Reason: $AI_REASON"
+              echo "- Reason: $AI_REASON"
             else
-              echo "Reason: None"
+              echo "- Reason: None"
             fi
 
           } >> $GITHUB_STEP_SUMMARY
