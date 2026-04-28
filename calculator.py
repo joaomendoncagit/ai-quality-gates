@@ -4,4 +4,4 @@ def add(a, b):
 def divide(a, b):
     if b == 0:
         raise ValueError("Cannot divide by zero")
-    return int(a / b) #
+    return int(a / b)
