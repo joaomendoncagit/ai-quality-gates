@@ -1,49 +1,77 @@
-import ast
+import json
+from openai import OpenAI
 
+MODEL = "gpt-4o-mini"
 
-def analyze_file(filename):
-    with open(filename, "r") as file:
-        code = file.read()
+SYSTEM_PROMPT = """You are an AI quality gate for a CI/CD pipeline.
 
-    risks = []
+Analyze the provided Python code and tests.
 
-    if "return a / b" in code and "b == 0" not in code:
-        risks.append("Division operation without explicit zero-division check")
+Decision criteria:
+- Correctness
+- Safety (e.g., division by zero)
+- Test coverage
+- Code risks
 
-    if "return a - b" in code:
-        risks.append("Suspicious subtraction found in add-like logic")
+Return STRICT JSON only in this format:
 
-    if "def multiply" in code:
-        try:
-            with open("test_calculator.py", "r") as test_file:
-                tests = test_file.read()
-            if "test_multiply" not in tests:
-                risks.append("New multiply function has no corresponding test")
-        except FileNotFoundError:
-            risks.append("Test file missing")
+{
+  "decision": "APPROVE" or "REJECT",
+  "risk": "LOW" or "HIGH",
+  "reasons": ["short reasons"]
+}
+"""
+
+def read_file(path):
+    try:
+        with open(path, "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""
+
+def analyze_with_ai():
+    client = OpenAI()
+
+    code = read_file("calculator.py")
+    tests = read_file("test_calculator.py")
+
+    user_prompt = f"""
+Analyze the following Python project.
+
+calculator.py:
+{code}
+
+test_calculator.py:
+{tests}
+"""
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0,
+        response_format={"type": "json_object"},  # ensures valid JSON
+    )
+
+    content = response.choices[0].message.content.strip()
 
     try:
-        ast.parse(code)
-    except SyntaxError:
-        risks.append("Python syntax error detected")
-
-    if risks:
-        return {
-            "risk": "HIGH",
+        result = json.loads(content)
+    except json.JSONDecodeError:
+        result = {
             "decision": "REJECT",
-            "reasons": risks
+            "risk": "HIGH",
+            "reasons": ["Invalid JSON response from model"]
         }
 
-    return {
-        "risk": "LOW",
-        "decision": "APPROVE",
-        "reasons": ["No major risk detected"]
-    }
+    print(result)
+    return result
 
 
 if __name__ == "__main__":
-    result = analyze_file("calculator.py")
-    print(result)
+    result = analyze_with_ai()
 
     if result["decision"] == "REJECT":
         exit(1)
