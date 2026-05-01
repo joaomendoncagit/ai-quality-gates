@@ -1,4 +1,7 @@
 Case,Change,TestGate,AI,Human,Final,Override,Actual,Evidence
-1,Baseline correct implementation,PASS,APPROVE,APPROVE,APPROVE,No,No defect,Pipeline passed with correct add() and divide()
-2,Add divide without zero check,PASS,REJECT,REJECT,REJECT,No,Defect,GitHub Actions failed because simulated AI gate detected division without zero-division check
-3,Changed add() to return a - b,FAIL,Not evaluated,REJECT,REJECT,No,Defect,Pytest failed because add(2,3) returned -1 instead of 5
+1,Baseline safe implementation with GPT-4o mini AI gate,PASS,APPROVE,APPROVE,APPROVE,No,No defect,Pytest passed; GPT-4o mini approved the safe implementation
+2,Faulty add implementation using subtraction,FAIL,REJECT,REJECT,REJECT,No,Defect,Pytest failed test_add; GPT-4o mini rejected incorrect subtraction implementation
+3,Remove zero-division handling while tests miss edge case,PASS,REJECT,REJECT,REJECT,No,Potential risk,Pytest passed normal division; GPT-4o mini rejected missing zero-division handling
+4,Incorrect expected value in division test,FAIL,APPROVE,REJECT,REJECT,No,Test defect,Pytest failed due to incorrect expected value (4 instead of 3); GPT-4o mini approved correct implementation and did not detect faulty test
+5,Dynamic execution using eval for extensibility,PASS,REJECT,APPROVE,APPROVE,Yes,No defect,Pytest passed; AI rejected use of eval as unsafe; human approved due to early development context and controlled usage
+6,Silent precision loss due to int conversion in divide,PASS,APPROVE,REJECT,REJECT,No,Defect,Pytest passed; GPT-4o mini approved; human rejected because divide silently truncates non-integer results such as 5/2 becoming 2 instead of 2.5
