@@ -535,7 +535,7 @@ git commit -m "Replace simulated AI with GPT-4o mini API"
 git push
 ```
 
-![Description](/Project/txts/screenshots/Screenshot%202026-04-28%20095457.png)
+![Description](./screenshots/Screenshot%202026-04-28%20095457.png)
 
 Quality Gate Summary
 - TestGate = PASS
@@ -604,7 +604,7 @@ git commit -m "Case 2 introduce faulty add implementation"
 git push
 ```
 
-![Description](/Project/txts/screenshots/Screenshot%202026-04-28%20095908.png)
+![Description](./screenshots/Screenshot%202026-04-28%20095908.png)
 
 Quality Gate Summary
 - TestGate = FAIL
@@ -667,7 +667,7 @@ git commit -m "Case 3 remove zero division handling"
 git push
 ```
 
-![Description](/Project/txts/screenshots/Screenshot%202026-04-28%20102447.png)
+![Description](./screenshots/Screenshot%202026-04-28%20102447.png)
 
 Quality Gate Summary
 - TestGate = PASS
@@ -747,7 +747,7 @@ git commit -m "Case 4 introduce incorrect test expectation"
 git push
 ```
 
-![Description](/Project/txts/screenshots/Screenshot%202026-04-28%20104457.png)
+![Description](./screenshots/Screenshot%202026-04-28%20104457.png)
 
 Quality Gate Summary
 - TestGate = FAIL
@@ -833,7 +833,7 @@ git commit -m "Case 5 dynamic execution with eval"
 git push
 ```
 
-![Description](/Project/txts/screenshots/Screenshot%202026-04-28%20122028.png)
+![Description](./screenshots/Screenshot%202026-04-28%20122028.png)
 
 Quality Gate Summary
 - TestGate = PASS
@@ -903,7 +903,7 @@ git commit -m "Case 6 introduce silent precision loss in division"
 git push
 ```
 
-![Description](/Project/txts/screenshots/Screenshot%202026-04-28%20125225.png)
+![Description](./screenshots/Screenshot%202026-04-28%20125225.png)
 
 Quality Gate Summary
 - TestGate = PASS
