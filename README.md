@@ -97,8 +97,8 @@ GitHub Actions workflow that:
 
 Decision logic:
 
-- If TestGate = FAIL OR AI = REJECT → pipeline FAIL
-- If TestGate = PASS AND AI = APPROVE → pipeline PASS
+- If TestGate = FAIL OR AI = REJECT -> pipeline FAIL
+- If TestGate = PASS AND AI = APPROVE -> pipeline PASS
 
 Important: the workflow acts as a post-commit feedback mechanism. It does not block git push.
 
