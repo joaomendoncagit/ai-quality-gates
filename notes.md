@@ -550,7 +550,7 @@ Case,Change,TestGate,AI,Human,Final,Override,Actual,Evidence
 ```
 
 ### 4.1.1 Check OpenAI platform website for troubleshooting (credits usage)
-I should also add about checking "https://platform.openai.com/home" not only to monitor credits being spent but also make sure API calls are ok in case I need to troubleshoot.
+We should check "https://platform.openai.com/home" not only to monitor credits being spent but also make sure API calls are ok in case I need to troubleshoot.
 
 ![Description](./screenshots/Screenshot%202026-05-11%20155503.png)
 
